@@ -92,6 +92,8 @@ def _generate_with_openai(analysis: Dict[str, Any]) -> str:
         if response.choices and len(response.choices) > 0:
             explanation = response.choices[0].message.content
             logger.info("Successfully generated explanation with OpenAI")
+            # Replace $ with ₹ for Indian currency
+            explanation = explanation.replace('$', '₹')
             return explanation
 
     except Exception as e:
@@ -154,6 +156,8 @@ Please provide a concise but comprehensive explanation that helps patients under
                     explanation = content["parts"][0].get("text", "")
                     if explanation:
                         logger.info("Successfully generated explanation with Gemini")
+                        # Replace $ with ₹ for Indian currency
+                        explanation = explanation.replace('$', '₹')
                         return explanation
         else:
             logger.warning(f"Gemini API error: {response.status_code} - {response.text}")
@@ -185,9 +189,9 @@ def _format_context_for_llm(analysis: Dict[str, Any]) -> str:
     warnings = analysis.get("cost_efficiency_warnings", [])
 
     context = f"""
-Total Bill: ${total_bill:,.2f}
-Claimable Amount: ${claimable:,.2f}
-Co-Payment: ${copay:,.2f}
+Total Bill: ₹{total_bill:,.2f}
+Claimable Amount: ₹{claimable:,.2f}
+Co-Payment: ₹{copay:,.2f}
 
 Excluded Items ({len(excluded_items)}):
 {_format_items(excluded_items)}
@@ -212,7 +216,7 @@ def _format_items(items: list) -> str:
         if isinstance(item, dict):
             name = item.get("name", item.get("item_name", "Unknown"))
             cost = item.get("cost", 0)
-            formatted.append(f"  • {name}: ${cost:,.2f}")
+            formatted.append(f"  • {name}: ₹{cost:,.2f}")
         else:
             formatted.append(f"  • {item}")
     
@@ -254,10 +258,10 @@ def _generate_fallback_explanation(
     explanation = f"""
 **Medical Bill Analysis Summary**
 
-Your total bill was **${total_bill:,.2f}**. After reviewing your insurance coverage:
+Your total bill was **₹{total_bill:,.2f}**. After reviewing your insurance coverage:
 
-• **Insurance will cover:** ${claimable:,.2f}
-• **Your co-payment:** ${copay:,.2f}
+• **Insurance will cover:** ₹{claimable:,.2f}
+• **Your co-payment:** ₹{copay:,.2f}
 • **Difference from claimable:** {cost_deviation_pct:.1f}%
 
 **Coverage Details:**

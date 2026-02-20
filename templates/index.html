@@ -801,22 +801,22 @@ function displayResults(data) {
                         </span>
                     </div><br><br>
 
-                    <div class="bar-label">Billed: ₹${billed}</div>
+                    <div class="bar-label">Billed: <strong style="color: #dc2626;">₹${formatCurrency(billed)}</strong></div>
                     <div class="bar-container">
                         <div class="bar billed" id="billed-${index}"></div>
                     </div>
 
-                    <div class="bar-label">Coverage Limit: ₹${coverage}</div>
+                    <div class="bar-label">Coverage Limit: <strong style="color: #7c3aed;">₹${formatCurrency(coverage)}</strong></div>
                     <div class="bar-container">
                         <div class="bar coverage" id="coverage-${index}"></div>
                     </div>
 
-                    <div class="bar-label">Final Claimable: ₹${claimable}</div>
+                    <div class="bar-label">Final Claimable: <strong style="color: #16a34a;">₹${formatCurrency(claimable)}</strong></div>
                     <div class="bar-container">
                         <div class="bar claimable" id="claimable-${index}"></div>
                     </div>
 
-                    <div class="bar-label">Market Mean: ₹${mean}</div>
+                    <div class="bar-label">Market Mean: <strong style="color: #0284c7;">₹${formatCurrency(mean)}</strong></div>
                     <div class="bar-container">
                         <div class="bar mean" id="mean-${index}"></div>
                     </div>
@@ -836,13 +836,43 @@ function displayResults(data) {
         });
     }
 
+    // Calculate savings and percentages for summary
+    const totalBill = analysis.total_bill_amount || 0;
+    const claimable = analysis.total_claimable_amount || analysis.final_claimable_amount || 0;
+    const notCovered = totalBill - claimable;
+    const claimablePercent = totalBill > 0 ? ((claimable / totalBill) * 100).toFixed(1) : 0;
+    const coPayment = analysis.co_payment_deducted || 0;
+
     results.innerHTML = `
         <h2>📊 Analysis Results</h2>
         ${comparisonHTML}
-        <div class="card"><strong>💰 Total Bill:</strong> <span style="font-size: 18px; color: #1e40af; font-weight: 800;">₹${formatCurrency(analysis.total_bill_amount)}</span></div>
-        <div class="card"><strong>✅ Final Claimable:</strong> <span style="font-size: 18px; color: #059669; font-weight: 800;">₹${formatCurrency(analysis.final_claimable_amount)}</span></div>
-        <div class="card"><strong>💳 Co-payment:</strong> <span style="font-size: 18px; color: #d97706; font-weight: 800;">₹${formatCurrency(analysis.co_payment_deducted)}</span></div>
-        <div class="card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #0284c7; margin-top: 20px;"><strong style="color: #0c4a6e; display: block; margin-bottom: 10px;">📝 Analysis:</strong><div style="margin-top: 10px; color: #0c4a6e; line-height: 1.8; white-space: pre-wrap;">${(data.explanation || '').replace(/\*+/g, '')}</div></div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+            <div class="card" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-left: 4px solid #2563eb;">
+                <div style="font-size: 12px; color: #1e40af; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">💰 Total Bill Amount</div>
+                <div style="font-size: 24px; color: #1e40af; font-weight: 800;">₹${formatCurrency(totalBill)}</div>
+            </div>
+            <div class="card" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left: 4px solid #16a34a;">
+                <div style="font-size: 12px; color: #15803d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">✅ Claimable Amount</div>
+                <div style="font-size: 24px; color: #15803d; font-weight: 800;">₹${formatCurrency(claimable)}</div>
+                <div style="font-size: 11px; color: #4b7c0f; margin-top: 6px;">${claimablePercent}% of total bill</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+            <div class="card" style="background: linear-gradient(135deg, #fef3c7 0%, #fef08a 100%); border-left: 4px solid #d97706;">
+                <div style="font-size: 12px; color: #92400e; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">💳 Co-Payment (15%)</div>
+                <div style="font-size: 24px; color: #b45309; font-weight: 800;">₹${formatCurrency(coPayment)}</div>
+                <div style="font-size: 11px; color: #a16207; margin-top: 6px;">Your deductible</div>
+            </div>
+            <div class="card" style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-left: 4px solid #dc2626;">
+                <div style="font-size: 12px; color: #7f1d1d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">⚠️ Not Covered</div>
+                <div style="font-size: 24px; color: #b91c1c; font-weight: 800;">₹${formatCurrency(notCovered)}</div>
+                <div style="font-size: 11px; color: #991b1b; margin-top: 6px;">${((notCovered / totalBill) * 100).toFixed(1)}% not covered</div>
+            </div>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #0284c7; margin-bottom: 20px;"><strong style="color: #0c4a6e; display: block; margin-bottom: 10px;">📝 Analysis:</strong><div style="margin-top: 10px; color: #0c4a6e; line-height: 1.8; white-space: pre-wrap;">${(data.explanation || '').replace(/\*+/g, '').replace(/\$/g, '₹')}</div></div>
         <button class="submit-btn" onclick="downloadReport()" style="margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;"><span>📥 Download Report (PDF)</span></button>
     `;
 
