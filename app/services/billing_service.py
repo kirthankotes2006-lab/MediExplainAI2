@@ -398,20 +398,31 @@ def analyze_medical_bill(bill: MedicalBill) -> dict:
             cost = Decimal(item.cost)
             total_bill_amount += cost
 
+            # Track non-payable items
             if _is_non_payable_item_policy(name):
                 non_payable_items.append(
                     {
                         "name": name,
                         "cost": float(cost),
+                        "reason": "non_payable_item",
                     }
                 )
-
-            # Cost-efficiency analysis for other items
+            
+            # Cost-efficiency analysis for other items (including non-payable ones)
+            # This helps identify overcharges even on items that insurance won't cover
             try:
                 analysis = analyze_cost_efficiency(name, float(cost))
-                if analysis and analysis.get("status") != "within_market_range":
+                if analysis:
+                    # Add severity indicator for anomalies
                     analysis_with_context = {**analysis, "item_type": "other_item"}
-                    cost_efficiency_warnings.append(analysis_with_context)
+                    
+                    # If item is non-payable AND overpriced, mark as high priority
+                    if _is_non_payable_item_policy(name) and analysis.get("status") == "highly_overpriced":
+                        analysis_with_context["priority"] = "high"
+                        analysis_with_context["alert"] = f"⚠️ Non-payable item '{name}' is significantly overpriced (₹{cost} vs typical ₹{analysis['average_cost']:.0f})"
+                    
+                    if analysis.get("status") != "within_market_range":
+                        cost_efficiency_warnings.append(analysis_with_context)
             except Exception:
                 continue
 

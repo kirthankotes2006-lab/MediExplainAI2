@@ -13,17 +13,47 @@ LOCAL_COST_DATABASE: Final[dict[str, dict[str, float]]] = {
     "MRI Scan": {
         "average_cost": 9000,
         "min_cost": 7000,
-        "max_cost": 11000,
+        "max_cost": 15000,
     },
     "Blood Test": {
-        "average_cost": 800,
-        "min_cost": 500,
-        "max_cost": 1200,
+        "average_cost": 1000,
+        "min_cost": 600,
+        "max_cost": 1800,
+    },
+    "ICU Charges": {
+        "average_cost": 8000,  # Per day
+        "min_cost": 5000,      # Per day
+        "max_cost": 12000,     # Per day
+    },
+    "CT Scan": {
+        "average_cost": 8000,
+        "min_cost": 6000,
+        "max_cost": 12000,
     },
     "Gloves": {
         "average_cost": 100,
         "min_cost": 50,
         "max_cost": 200,
+    },
+    "Administrative Charges": {
+        "average_cost": 500,
+        "min_cost": 200,
+        "max_cost": 800,
+    },
+    "General Consultation": {
+        "average_cost": 1200,
+        "min_cost": 800,
+        "max_cost": 1800,
+    },
+    "Knee Replacement Surgery": {
+        "average_cost": 100000,
+        "min_cost": 80000,
+        "max_cost": 150000,
+    },
+    "Minor Surgery": {
+        "average_cost": 30000,
+        "min_cost": 15000,
+        "max_cost": 60000,
     },
 }
 

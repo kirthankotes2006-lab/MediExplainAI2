@@ -12,21 +12,29 @@ from typing import Final, Optional
 INSURANCE_POLICY: Final[dict] = {
     "coverage_limits": {
         "General Consultation": 2000,
-        "Blood Test": 1500,
-        "MRI Scan": 10000,
+        "Blood Test": 3000,
+        "MRI Scan": 18000,
+        "CT Scan": 15000,
+        "ICU Charges": 10000,  # Per day, max 3 days
         "Minor Surgery": 50000,
         "Major Surgery": 200000,
+        "Knee Replacement Surgery": 150000,
     },
     "exclusions": [
         "Cosmetic Surgery",
+        "Fertility Treatment",
+        "Experimental Procedures",
         "Experimental Treatment",
     ],
     "non_payable_items": [
         "Gloves",
+        "Masks",
         "Sanitizer",
         "Administrative Charges",
+        "Registration Fees",
+        "Sanitization Charges",
     ],
-    "co_payment_percentage": 10,
+    "co_payment_percentage": 15,
 }
 
 
