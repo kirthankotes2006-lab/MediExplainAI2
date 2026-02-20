@@ -5,69 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
                 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', sans-serif;
-            background: #f5f7fa;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
         }
 
         .container {
             max-width: 900px;
-            margin: 40px auto;
-            padding: 30px;
+            margin: 30px auto;
+            padding: 40px;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
         }
 
         h1 {
             text-align: center;
-            margin-bottom: 10px;
-            font-size: 32px;
-            font-weight: 700;
-            color: #1f2937;
-            letter-spacing: -0.5px;
+            margin: 0 0 8px 0;
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
         }
 
         h2 {
-            font-size: 22px;
-            font-weight: 600;
+            font-size: 24px;
+            font-weight: 700;
             color: #1f2937;
-            margin-top: 0;
-            letter-spacing: -0.3px;
+            margin: 28px 0 18px 0;
+            letter-spacing: -0.5px;
         }
 
         p.subtitle {
             text-align: center;
             color: #6b7280;
-            margin-bottom: 30px;
+            margin: 0 0 32px 0;
             font-size: 16px;
             font-weight: 500;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .toggle {
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
         }
 
         .toggle button {
-            padding: 10px 20px;
-            border-radius: 30px;
-            border: none;
+            padding: 11px 24px;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
             cursor: pointer;
-            background: #e5e7eb;
+            background: white;
+            color: #6b7280;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toggle button:hover {
+            border-color: #2563eb;
+            color: #2563eb;
         }
 
         .toggle button.active {
-            background: #2563eb;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
             color: white;
+            border-color: transparent;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
         }
 
         .section {
@@ -80,12 +100,26 @@
 
         input {
             width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 8px;
-            border: 1px solid #ddd;
+            padding: 12px 14px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
             font-family: inherit;
             font-size: 14px;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        input:hover {
+            border-color: #d1d5db;
+            background: white;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         input[type="file"] {
@@ -118,106 +152,226 @@
         }
 
         button.submit-btn {
-            margin-top: 15px;
-            padding: 12px;
+            margin-top: 16px;
+            padding: 13px;
             width: 100%;
             border-radius: 10px;
             border: none;
-            background: #2563eb;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
             color: white;
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 15px;
             cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+        }
+
+        button.submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.3);
+        }
+
+        button.submit-btn:active {
+            transform: translateY(0);
+        }
+
+        button.submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .results {
             margin-top: 40px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .card {
             background: #f9fafb;
-            padding: 15px;
+            padding: 18px;
             border-radius: 12px;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             border: 1px solid #e5e7eb;
-            line-height: 1.6;
+            line-height: 1.7;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: #d1d5db;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
         .card strong {
             color: #1f2937;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .card div {
             color: #374151;
             font-size: 15px;
+            margin: 6px 0;
         }
 
         .policy-card {
-            background: #dcfce7;
-            padding: 15px;
+            background: linear-gradient(135deg, #dcfce7 0%, #d1fae5 100%);
+            padding: 18px;
             border-radius: 12px;
             border: 2px solid #86efac;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .policy-card:hover {
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.15);
         }
 
         .error {
-            background: #fee2e2;
-            padding: 10px;
-            border-radius: 8px;
+            background: #fef2f2;
+            padding: 14px 16px;
+            border-radius: 10px;
             color: #991b1b;
+            border-left: 4px solid #dc2626;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInDown 0.3s ease;
+        }
+
+        .error::before {
+            content: "⚠️";
+            font-size: 18px;
+            flex-shrink: 0;
         }
 
         .loading {
             text-align: center;
-            font-weight: bold;
+            font-weight: 600;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .loading::before {
+            content: "";
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e5e7eb;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .bar-container {
             background: #e5e7eb;
-            height: 20px;
-            border-radius: 10px;
-            margin-bottom: 12px;
+            height: 24px;
+            border-radius: 12px;
+            margin-bottom: 14px;
             overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .bar {
-            height: 20px;
-            border-radius: 10px;
+            height: 24px;
+            border-radius: 12px;
             width: 0;
-            transition: width 1s ease-in-out;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
 
-        .bar.billed { background: #ef4444; }
-        .bar.coverage { background: #3b82f6; }
-        .bar.claimable { background: #10b981; }
-        .bar.mean { background: #8b5cf6; }
+        .bar::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .bar.billed { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        .bar.coverage { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+        .bar.claimable { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .bar.mean { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
 
         .bar-label {
-            font-size: 14px;
-            margin-bottom: 5px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #374151;
         }
 
         .risk-meter {
-            margin-top: 15px;
+            margin-top: 20px;
+        }
+
+        .risk-meter strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .meter-container {
             background: #e5e7eb;
-            height: 18px;
-            border-radius: 9px;
+            height: 20px;
+            border-radius: 10px;
             overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .meter-fill {
-            height: 18px;
+            height: 20px;
             width: 0;
-            border-radius: 9px;
-            transition: width 1s ease-in-out;
+            border-radius: 10px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
 
-        .meter-low { background: #10b981; }
-        .meter-medium { background: #f59e0b; }
-        .meter-high { background: #ef4444; }
+        .meter-fill::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .meter-low { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .meter-medium { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .meter-high { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
 
         .tooltip {
             position: relative;
@@ -226,39 +380,51 @@
 
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 220px;
-            background-color: #111827;
+            width: 240px;
+            background-color: #1f2937;
             color: #fff;
             text-align: center;
-            padding: 8px;
-            border-radius: 6px;
+            padding: 10px 12px;
+            border-radius: 8px;
             position: absolute;
             z-index: 1;
             bottom: 125%;
             left: 50%;
-            margin-left: -110px;
-            font-size: 12px;
+            margin-left: -120px;
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         .tooltip:hover .tooltiptext {
             visibility: visible;
+            opacity: 1;
         }
 
         .badge {
             display: inline-block;
-            padding: 4px 8px;
+            padding: 5px 10px;
             border-radius: 20px;
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 700;
             margin-left: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
-        .badge-high { background: #fee2e2; color: #b91c1c; }
-        .badge-medium { background: #fef3c7; color: #92400e; }
-        .badge-low { background: #dcfce7; color: #166534; }
+        .badge-high { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #7f1d1d; }
+        .badge-medium { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #78350f; }
+        .badge-low { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); color: #165e4d; }
 
         .chart-container {
-            margin-top: 15px;
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: white;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
         }
 
         @media (max-width: 600px) {
@@ -266,20 +432,86 @@
                 margin: 10px;
                 padding: 20px;
             }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            .toggle {
+                flex-direction: column;
+            }
+
+            .toggle button {
+                width: 100%;
+            }
+
+            input[type="file"]::file-selector-button {
+                display: block;
+                width: 100%;
+                margin-bottom: 8px;
+            }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>MediExplain AI</h1>
-    <p class="subtitle">Understand your medical bills, coverage & potential overpricing instantly.</p>
+    <div style="text-align: center; margin-bottom: 32px;">
+        <!-- Logo -->
+        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 16px; filter: drop-shadow(0 4px 12px rgba(37, 99, 235, 0.2));">
+            <!-- Medical Cross -->
+            <circle cx="36" cy="36" r="36" fill="url(#logoGradient)" opacity="0.1"/>
+            <rect x="32" y="24" width="8" height="24" fill="#2563eb" rx="4"/>
+            <rect x="24" y="32" width="24" height="8" fill="#2563eb" rx="4"/>
+            <!-- Chart bars -->
+            <g transform="translate(28, 48)">
+                <rect x="0" y="6" width="3" height="6" fill="#10b981" rx="1.5"/>
+                <rect x="5" y="4" width="3" height="8" fill="#3b82f6" rx="1.5"/>
+                <rect x="10" y="2" width="3" height="10" fill="#8b5cf6" rx="1.5"/>
+            </g>
+            <defs>
+                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#1e40af;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+        </svg>
+        
+        <h1>MediExplain AI</h1>
+        
+        <p class="subtitle">Understand your medical bills, coverage & potential overpricing instantly.</p>
+        
+        <!-- Feature highlights -->
+        <div style="display: flex; justify-content: center; gap: 24px; margin-bottom: 32px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 150px; padding: 12px; border-radius: 10px; background: rgba(37, 99, 235, 0.05); border: 1px solid rgba(37, 99, 235, 0.1);">
+                <div style="font-size: 20px; margin-bottom: 6px;">📊</div>
+                <div style="font-size: 13px; font-weight: 600; color: #1f2937;">Smart Analysis</div>
+                <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">AI-powered cost insights</div>
+            </div>
+            <div style="flex: 1; min-width: 150px; padding: 12px; border-radius: 10px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.1);">
+                <div style="font-size: 20px; margin-bottom: 6px;">🛡️</div>
+                <div style="font-size: 13px; font-weight: 600; color: #1f2937;">Coverage Clarity</div>
+                <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">Know what's covered</div>
+            </div>
+            <div style="flex: 1; min-width: 150px; padding: 12px; border-radius: 10px; background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.1);">
+                <div style="font-size: 20px; margin-bottom: 6px;">💡</div>
+                <div style="font-size: 13px; font-weight: 600; color: #1f2937;">Smart Q&A</div>
+                <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">Ask questions anytime</div>
+            </div>
+        </div>
+    </div>
 
-    <div class="card" style="background: #e0f2fe; border-left: 4px solid #0284c7; margin-bottom: 30px;">
-        <strong style="color: #0c4a6e;">Active Policy:</strong>
-        <div style="margin-top: 8px; color: #0c4a6e;">
-            <div>Co-payment: 20%</div>
-            <div>MRI Coverage: ₹15,000</div>
+    <div class="card" style="background: linear-gradient(135deg, #e0f2fe 0%, #cffafe 100%); border-left: 4px solid #0284c7; margin-bottom: 30px;">
+        <strong style="color: #0c4a6e; display: flex; align-items: center; gap: 8px;">
+            <span>📋</span> Active Policy
+        </strong>
+        <div style="margin-top: 12px; color: #0c4a6e;">
+            <div>💰 Co-payment: 20%</div>
+            <div style="margin-top: 6px;">🏥 MRI Coverage: ₹15,000</div>
         </div>
     </div>
 
@@ -291,30 +523,33 @@
 
     <!-- Manual Section -->
     <div id="manualSection" class="section active">
-        <input id="patient_name" placeholder="Patient Name">
-        <input id="hospital_name" placeholder="Hospital Name">
-        <input id="treatment_name" placeholder="Treatment Name">
-        <input id="treatment_cost" placeholder="Treatment Cost">
-        <input id="other_name" placeholder="Other Item Name">
-        <input id="other_cost" placeholder="Other Item Cost">
+        <h3 style="margin-top: 0; color: #1f2937; font-size: 18px; margin-bottom: 20px;">📝 Enter Bill Details</h3>
+        <input id="patient_name" placeholder="Patient Name" aria-label="Patient Name">
+        <input id="hospital_name" placeholder="Hospital Name" aria-label="Hospital Name">
+        <input id="treatment_name" placeholder="Treatment Name" aria-label="Treatment Name">
+        <input id="treatment_cost" type="number" placeholder="Treatment Cost (₹)" aria-label="Treatment Cost">
+        <input id="other_name" placeholder="Other Item Name" aria-label="Other Item Name">
+        <input id="other_cost" type="number" placeholder="Other Item Cost (₹)" aria-label="Other Item Cost">
 
-        <button class="submit-btn" onclick="submitManual()">Analyze Bill</button>
+        <button class="submit-btn" onclick="submitManual()">📊 Analyze Bill</button>
     </div>
 
     <!-- PDF Section -->
     <div id="pdfSection" class="section">
-        <input type="file" id="pdfFile">
-        <button class="submit-btn" onclick="submitPDF()">Upload & Analyze</button>
+        <h3 style="margin-top: 0; color: #1f2937; font-size: 18px; margin-bottom: 20px;">📄 Upload Medical Bill PDF</h3>
+        <input type="file" id="pdfFile" aria-label="Upload PDF file">
+        <button class="submit-btn" onclick="submitPDF()">📊 Upload & Analyze</button>
     </div>
 
     <!-- Policy Section -->
     <div id="policySection" class="section">
-        <input type="file" id="policyFile" accept="application/pdf">
-        <button class="submit-btn" onclick="submitPolicy()">Upload Insurance Policy</button>
+        <h3 style="margin-top: 0; color: #1f2937; font-size: 18px; margin-bottom: 20px;">🛡️ Upload Insurance Policy</h3>
+        <input type="file" id="policyFile" accept="application/pdf" aria-label="Upload policy PDF">
+        <button class="submit-btn" onclick="submitPolicy()">📋 Upload Insurance Policy</button>
         <div id="policySummary" style="margin-top:20px;"></div>
     </div>
 
-    <div id="loading" class="loading" style="display:none;">
+    <div id="loading" class="loading" style="display:none;" aria-live="polite" aria-busy="true">
         Analyzing... Please wait.
     </div>
 
@@ -323,19 +558,21 @@
     <div id="results" class="results"></div>
 
     <!-- Q&A Section -->
-    <div id="qaSection" class="section" style="display:none; margin-top: 30px;">
-        <h2>Ask Questions About Your Bill</h2>
-        <div style="display: flex; gap: 10px; margin-top: 15px;">
+    <div id="qaSection" class="section" style="display:none; margin-top: 40px; padding: 24px; background: linear-gradient(135deg, #f0f4f8 0%, #e6f0ff 100%); border-radius: 16px; border: 2px solid #dbeafe;">
+        <h2 style="margin-top: 0; color: #1e40af;">💬 Ask Questions About Your Bill</h2>
+        <p style="color: #3730a3; font-size: 14px; margin: 10px 0 18px 0;">Get instant answers about coverage, claims, and your analysis.</p>
+        <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
             <input 
                 id="userQuestion" 
                 type="text" 
                 placeholder="Ask about your bill, exclusions, coverage..." 
-                style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;"
+                aria-label="Your question about the bill"
+                style="flex: 1; min-width: 200px; padding: 12px 14px; border: 2px solid #dbeafe; border-radius: 10px; font-size: 14px; background: white; transition: all 0.3s ease;"
             >
-            <button class="submit-btn" onclick="askLLM()" style="width: auto;">Ask</button>
+            <button class="submit-btn" onclick="askLLM()" style="width: auto; min-width: 120px; padding: 12px 20px; margin-top: 0;">🤖 Ask</button>
         </div>
-        <div id="qaAnswer" style="margin-top: 15px; padding: 15px; background: #f0f4f8; border-radius: 8px; display: none;"></div>
-        <div id="qaLoading" class="loading" style="display:none; margin-top: 15px;">
+        <div id="qaAnswer" style="margin-top: 18px; padding: 16px; background: white; border-radius: 12px; display: none; border-left: 4px solid #2563eb; line-height: 1.8; color: #374151;"></div>
+        <div id="qaLoading" class="loading" style="display:none; margin-top: 15px; color: #2563eb;">
             Generating answer...
         </div>
     </div>
@@ -600,13 +837,13 @@ function displayResults(data) {
     }
 
     results.innerHTML = `
-        <h2>Analysis Results</h2>
+        <h2>📊 Analysis Results</h2>
         ${comparisonHTML}
-        <div class="card"><strong>Total Bill:</strong> ₹${formatCurrency(analysis.total_bill_amount)}</div>
-        <div class="card"><strong>Final Claimable:</strong> ₹${formatCurrency(analysis.final_claimable_amount)}</div>
-        <div class="card"><strong>Co-payment:</strong> ₹${formatCurrency(analysis.co_payment_deducted)}</div>
-        <div class="card" style="background: #f0f9ff; border: 1px solid #0284c7; margin-top: 20px;"><strong style="color: #0c4a6e;">Explanation:</strong><br><div style="margin-top: 10px; color: #0c4a6e; line-height: 1.8; white-space: pre-wrap;">${(data.explanation || '').replace(/\*+/g, '')}</div></div>
-        <button class="submit-btn" onclick="downloadReport()">Download Report (PDF)</button>
+        <div class="card"><strong>💰 Total Bill:</strong> <span style="font-size: 18px; color: #1e40af; font-weight: 800;">₹${formatCurrency(analysis.total_bill_amount)}</span></div>
+        <div class="card"><strong>✅ Final Claimable:</strong> <span style="font-size: 18px; color: #059669; font-weight: 800;">₹${formatCurrency(analysis.final_claimable_amount)}</span></div>
+        <div class="card"><strong>💳 Co-payment:</strong> <span style="font-size: 18px; color: #d97706; font-weight: 800;">₹${formatCurrency(analysis.co_payment_deducted)}</span></div>
+        <div class="card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #0284c7; margin-top: 20px;"><strong style="color: #0c4a6e; display: block; margin-bottom: 10px;">📝 Analysis:</strong><div style="margin-top: 10px; color: #0c4a6e; line-height: 1.8; white-space: pre-wrap;">${(data.explanation || '').replace(/\*+/g, '')}</div></div>
+        <button class="submit-btn" onclick="downloadReport()" style="margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;"><span>📥 Download Report (PDF)</span></button>
     `;
 
     // Store analysis for Q&A
@@ -653,6 +890,23 @@ function displayResults(data) {
 
 async function submitManual() {
     clearError();
+    
+    // Validation
+    const patientName = document.getElementById("patient_name").value.trim();
+    const hospitalName = document.getElementById("hospital_name").value.trim();
+    const treatmentName = document.getElementById("treatment_name").value.trim();
+    const treatmentCost = parseFloat(document.getElementById("treatment_cost").value);
+
+    if (!patientName || !hospitalName || !treatmentName) {
+        showError("Please fill in all required fields (Patient, Hospital, Treatment)");
+        return;
+    }
+
+    if (isNaN(treatmentCost) || treatmentCost <= 0) {
+        showError("Please enter a valid treatment cost");
+        return;
+    }
+
     showLoading(true);
 
     try {
@@ -660,15 +914,15 @@ async function submitManual() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                patient_name: patient_name.value,
-                hospital_name: hospital_name.value,
+                patient_name: patientName,
+                hospital_name: hospitalName,
                 treatments: [{
-                    name: treatment_name.value,
-                    cost: parseFloat(treatment_cost.value)
+                    name: treatmentName,
+                    cost: treatmentCost
                 }],
                 other_items: [{
-                    name: other_name.value,
-                    cost: parseFloat(other_cost.value)
+                    name: document.getElementById("other_name").value.trim() || "N/A",
+                    cost: parseFloat(document.getElementById("other_cost").value) || 0
                 }]
             })
         });
@@ -679,7 +933,7 @@ async function submitManual() {
         displayResults(data);
 
     } catch (err) {
-        showError(err.message);
+        showError("❌ " + err.message);
     }
 
     showLoading(false);
@@ -687,6 +941,17 @@ async function submitManual() {
 
 async function submitPDF() {
     clearError();
+    
+    if (!pdfFile.files[0]) {
+        showError("Please select a PDF file");
+        return;
+    }
+
+    if (!pdfFile.files[0].name.toLowerCase().endsWith('.pdf')) {
+        showError("Please select a valid PDF file");
+        return;
+    }
+
     showLoading(true);
 
     const formData = new FormData();
@@ -704,7 +969,7 @@ async function submitPDF() {
         displayResults(data);
 
     } catch (err) {
-        showError(err.message);
+        showError("❌ " + err.message);
     }
 
     showLoading(false);
@@ -712,10 +977,17 @@ async function submitPDF() {
 
 async function submitPolicy() {
     clearError();
+
+    const policyFile = document.getElementById("policyFile").files[0];
+    if (!policyFile) {
+        showError("Please select an insurance policy PDF");
+        return;
+    }
+
     showLoading(true);
 
     const formData = new FormData();
-    formData.append("file", document.getElementById("policyFile").files[0]);
+    formData.append("file", policyFile);
 
     try {
         const response = await fetch("/billing/upload-policy", {
@@ -727,16 +999,18 @@ async function submitPolicy() {
         if (!response.ok) throw new Error(data.detail || "Policy upload failed");
 
         document.getElementById("policySummary").innerHTML = `
-            <div class="card" style="background:#ecfdf5;border:1px solid #10b981;">
-                <strong>Active Policy Loaded</strong><br>
-                Co-payment: ${data.co_payment_percentage}%<br>
-                Coverage: ${Object.keys(data.coverage_limits).join(", ")}<br>
-                Exclusions: ${data.exclusions.join(", ")}
+            <div class="policy-card">
+                <strong style="font-size: 16px; color: #166534; display: block; margin-bottom: 12px;">✅ Policy Loaded Successfully!</strong>
+                <div style="color: #166534; font-size: 14px; line-height: 1.8;">
+                    <div>💰 Co-payment: <strong>${data.co_payment_percentage}%</strong></div>
+                    <div style="margin-top: 8px;">🏥 Coverage: <strong>${Object.keys(data.coverage_limits).join(", ")}</strong></div>
+                    <div style="margin-top: 8px;">❌ Exclusions: <strong>${data.exclusions.join(", ")}</strong></div>
+                </div>
             </div>
         `;
 
     } catch (err) {
-        showError(err.message);
+        showError("❌ " + err.message);
     }
 
     showLoading(false);
@@ -748,6 +1022,10 @@ async function downloadReport() {
         return;
     }
 
+    const downloadBtn = event.target;
+    downloadBtn.disabled = true;
+    downloadBtn.innerHTML = "📥 Preparing...";
+
     try {
         const response = await fetch("/billing/download-report", {
             method: "POST",
@@ -755,7 +1033,7 @@ async function downloadReport() {
             body: JSON.stringify(lastAnalysisData)
         });
         
-        if (!response.ok) throw new Error("Failed to download report");
+        if (!response.ok) throw new Error("Failed to generate report");
         
         const blob = await response.blob();
         const link = document.createElement("a");
@@ -763,8 +1041,16 @@ async function downloadReport() {
         link.download = "MediExplain_Report.pdf";
         link.click();
         window.URL.revokeObjectURL(link.href);
+        
+        downloadBtn.innerHTML = "✅ Downloaded!";
+        setTimeout(() => {
+            downloadBtn.disabled = false;
+            downloadBtn.innerHTML = "📥 Download Report (PDF)";
+        }, 2000);
     } catch (err) {
-        showError("Failed to download report: " + err.message);
+        showError("❌ Failed to download: " + err.message);
+        downloadBtn.disabled = false;
+        downloadBtn.innerHTML = "📥 Download Report (PDF)";
     }
 }
 
@@ -772,7 +1058,7 @@ async function askLLM() {
     const question = document.getElementById("userQuestion").value.trim();
     
     if (!question) {
-        showError("Please enter a question");
+        showError("Please enter a question about your bill");
         return;
     }
 
@@ -783,9 +1069,11 @@ async function askLLM() {
 
     const qaLoading = document.getElementById("qaLoading");
     const qaAnswer = document.getElementById("qaAnswer");
+    const askBtn = document.querySelector('#qaSection .submit-btn');
     
     qaLoading.style.display = "block";
     qaAnswer.style.display = "none";
+    askBtn.disabled = true;
     clearError();
 
     try {
@@ -799,16 +1087,20 @@ async function askLLM() {
         });
 
         if (!response.ok) {
-            throw new Error("Failed to get answer");
+            throw new Error("Could not generate answer");
         }
 
         const data = await response.json();
-        qaAnswer.innerHTML = `<strong>Answer:</strong><br>${data.answer}`;
+        qaAnswer.innerHTML = `<strong>💡 Answer:</strong><br><div style="margin-top: 10px;">${(data.answer || '').replace(/\*+/g, '')}</div>`;
         qaAnswer.style.display = "block";
+        
+        // Clear input after successful response
+        document.getElementById("userQuestion").value = "";
     } catch (err) {
-        showError("Error getting answer: " + err.message);
+        showError("❌ " + err.message);
     } finally {
         qaLoading.style.display = "none";
+        askBtn.disabled = false;
     }
 }
 
