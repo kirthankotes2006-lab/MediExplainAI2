@@ -842,6 +842,67 @@ function displayResults(data) {
     const notCovered = totalBill - claimable;
     const claimablePercent = totalBill > 0 ? ((claimable / totalBill) * 100).toFixed(1) : 0;
     const coPayment = analysis.co_payment_deducted || 0;
+    const priceAlternatives = analysis.price_alternatives || [];
+    const hasPolicyInfo = (analysis.co_payment_deducted !== undefined && analysis.co_payment_deducted !== null);
+    
+    // Build policy info section (only if policy is loaded)
+    let policySection = '';
+    if (hasPolicyInfo) {
+        policySection = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+            <div class="card" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left: 4px solid #16a34a;">
+                <div style="font-size: 12px; color: #15803d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">✅ Claimable Amount</div>
+                <div style="font-size: 24px; color: #15803d; font-weight: 800;">₹${formatCurrency(claimable)}</div>
+                <div style="font-size: 11px; color: #4b7c0f; margin-top: 6px;">${claimablePercent}% of total bill</div>
+            </div>
+            <div class="card" style="background: linear-gradient(135deg, #fef3c7 0%, #fef08a 100%); border-left: 4px solid #d97706;">
+                <div style="font-size: 12px; color: #92400e; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">💳 Co-Payment (15%)</div>
+                <div style="font-size: 24px; color: #b45309; font-weight: 800;">₹${formatCurrency(coPayment)}</div>
+                <div style="font-size: 11px; color: #a16207; margin-top: 6px;">Your deductible</div>
+            </div>
+        </div>
+        
+        <div class="card" style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-left: 4px solid #dc2626; margin-bottom: 20px;">
+            <div style="font-size: 12px; color: #7f1d1d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">⚠️ Not Covered</div>
+            <div style="font-size: 24px; color: #b91c1c; font-weight: 800;">₹${formatCurrency(notCovered)}</div>
+            <div style="font-size: 11px; color: #991b1b; margin-top: 6px;">${((notCovered / totalBill) * 100).toFixed(1)}% not covered</div>
+        </div>
+        `;
+    }
+    
+    // Build price alternatives section
+    let priceAltSection = '';
+    if (priceAlternatives && priceAlternatives.length > 0) {
+        priceAltSection = `
+        <div class="card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; margin-bottom: 20px;">
+            <strong style="color: #92400e; display: block; margin-bottom: 15px; font-size: 16px;">💡 Better Price Options Available</strong>
+            <div style="font-size: 13px; color: #78350f; margin-bottom: 15px;">We found items with overpricing. Consider these alternatives to save money:</div>
+            ${priceAlternatives.map(alt => `
+                <div style="background: white; padding: 12px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid #f59e0b;">
+                    <div style="font-weight: 600; color: #1f2937; margin-bottom: 8px;">📌 ${alt.item_name}</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12px; margin-bottom: 10px;">
+                        <div><span style="color: #666;">Billed at:</span> <strong style="color: #dc2626;">₹${formatCurrency(alt.billed_price)}</strong></div>
+                        <div><span style="color: #666;">Cheapest available:</span> <strong style="color: #059669;">₹${formatCurrency(alt.cheapest_price)}</strong></div>
+                    </div>
+                    <div style="background: #fef3c7; padding: 8px; border-radius: 6px; margin-bottom: 10px;">
+                        <div style="color: #b45309; font-weight: 700; font-size: 13px;">💰 You can save ₹${formatCurrency(alt.savings_amount)} (${alt.savings_percent}%)</div>
+                        <div style="color: #92400e; font-size: 11px; margin-top: 4px;">Use: ${alt.cheapest_option}</div>
+                    </div>
+                    ${alt.alternatives && alt.alternatives.length > 0 ? `
+                        <div style="font-size: 11px; color: #666;">
+                            <strong style="display: block; margin-bottom: 6px;">Other options:</strong>
+                            ${alt.alternatives.map(opt => `
+                                <div style="padding: 4px 0; border-bottom: 1px solid #e5e7eb;">
+                                    • ${opt.brand || opt.provider} - <strong style="color: #059669;">₹${formatCurrency(opt.price)}</strong>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('')}
+        </div>
+        `;
+    }
 
     results.innerHTML = `
         <h2>📊 Analysis Results</h2>
@@ -852,25 +913,15 @@ function displayResults(data) {
                 <div style="font-size: 12px; color: #1e40af; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">💰 Total Bill Amount</div>
                 <div style="font-size: 24px; color: #1e40af; font-weight: 800;">₹${formatCurrency(totalBill)}</div>
             </div>
-            <div class="card" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left: 4px solid #16a34a;">
-                <div style="font-size: 12px; color: #15803d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">✅ Claimable Amount</div>
-                <div style="font-size: 24px; color: #15803d; font-weight: 800;">₹${formatCurrency(claimable)}</div>
-                <div style="font-size: 11px; color: #4b7c0f; margin-top: 6px;">${claimablePercent}% of total bill</div>
-            </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-            <div class="card" style="background: linear-gradient(135deg, #fef3c7 0%, #fef08a 100%); border-left: 4px solid #d97706;">
-                <div style="font-size: 12px; color: #92400e; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">💳 Co-Payment (15%)</div>
-                <div style="font-size: 24px; color: #b45309; font-weight: 800;">₹${formatCurrency(coPayment)}</div>
-                <div style="font-size: 11px; color: #a16207; margin-top: 6px;">Your deductible</div>
-            </div>
             <div class="card" style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-left: 4px solid #dc2626;">
-                <div style="font-size: 12px; color: #7f1d1d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">⚠️ Not Covered</div>
+                <div style="font-size: 12px; color: #7f1d1d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">⚠️ Unwanted Expenses</div>
                 <div style="font-size: 24px; color: #b91c1c; font-weight: 800;">₹${formatCurrency(notCovered)}</div>
-                <div style="font-size: 11px; color: #991b1b; margin-top: 6px;">${((notCovered / totalBill) * 100).toFixed(1)}% not covered</div>
+                <div style="font-size: 11px; color: #991b1b; margin-top: 6px;">Verify these charges with hospital</div>
             </div>
         </div>
+        
+        ${policySection}
+        ${priceAltSection}
 
         <div class="card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #0284c7; margin-bottom: 20px;"><strong style="color: #0c4a6e; display: block; margin-bottom: 10px;">📝 Analysis:</strong><div style="margin-top: 10px; color: #0c4a6e; line-height: 1.8; white-space: pre-wrap;">${(data.explanation || '').replace(/\*+/g, '').replace(/\$/g, '₹')}</div></div>
         <button class="submit-btn" onclick="downloadReport()" style="margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;"><span>📥 Download Report (PDF)</span></button>

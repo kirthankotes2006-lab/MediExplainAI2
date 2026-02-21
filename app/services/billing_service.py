@@ -4,7 +4,7 @@ Designed to be easily extensible for ML model integration.
 """
 from datetime import datetime
 from decimal import Decimal
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict, Any
 from uuid import uuid4
 
 from app.schemas.billing_schema import (
@@ -27,6 +27,11 @@ from app.core.insurance_policy import (
 from app.core.policy_model import InsurancePolicyModel
 from app.core.policy_state import CURRENT_POLICY
 from app.services.cost_analysis_service import analyze_cost_efficiency
+from app.core.medicine_database import (
+    get_medicine_alternatives,
+    get_procedure_alternatives,
+    calculate_savings,
+)
 
 
 def _get_active_policy() -> Optional[InsurancePolicyModel]:
@@ -100,6 +105,62 @@ def _get_co_payment_percentage_policy() -> float:
     if policy:
         return float(policy.co_payment_percentage)
     return get_co_payment_percentage()
+
+
+def _generate_price_alternatives(bill: MedicalBill) -> List[Dict[str, Any]]:
+    """
+    Generate price comparison alternatives for bill items.
+    Shows potential savings by using different medicines or providers.
+    
+    Args:
+        bill: The medical bill object
+        
+    Returns:
+        List of price alternatives with savings information
+    """
+    alternatives = []
+    
+    # Check treatments
+    for treatment in bill.treatments:
+        item_name = treatment.name
+        billed_price = float(treatment.cost)
+        
+        # Try to find alternatives
+        savings_info = calculate_savings(item_name, billed_price, "procedure")
+        if savings_info and savings_info.get("is_overpriced"):
+            alternatives.append({
+                "item_name": item_name,
+                "item_type": "treatment",
+                "billed_price": billed_price,
+                "alternatives": savings_info.get("all_alternatives", []),
+                "cheapest_price": savings_info.get("cheapest_price"),
+                "cheapest_option": savings_info.get("cheapest_option"),
+                "average_price": savings_info.get("average_price"),
+                "savings_amount": savings_info.get("savings_amount"),
+                "savings_percent": savings_info.get("savings_percent"),
+            })
+    
+    # Check other items (medicines, supplies, etc.)
+    for other_item in bill.other_items:
+        item_name = other_item.name
+        billed_price = float(other_item.cost)
+        
+        # Try to find alternatives
+        savings_info = calculate_savings(item_name, billed_price, "medicine")
+        if savings_info and savings_info.get("is_overpriced"):
+            alternatives.append({
+                "item_name": item_name,
+                "item_type": "supply",
+                "billed_price": billed_price,
+                "alternatives": savings_info.get("all_alternatives", []),
+                "cheapest_price": savings_info.get("cheapest_price"),
+                "cheapest_option": savings_info.get("cheapest_option"),
+                "average_price": savings_info.get("average_price"),
+                "savings_amount": savings_info.get("savings_amount"),
+                "savings_percent": savings_info.get("savings_percent"),
+            })
+    
+    return alternatives
 
 
 class BillingService:
@@ -440,6 +501,9 @@ def analyze_medical_bill(bill: MedicalBill) -> dict:
             total_claimable_before_copay - co_payment_deducted
         ).quantize(Decimal("0.01"))
 
+        # Generate price alternatives and savings recommendations
+        price_alternatives = _generate_price_alternatives(bill)
+
         return {
             "total_bill_amount": float(total_bill_amount),
             "total_claimable_amount": float(total_claimable_after_copay),
@@ -448,6 +512,7 @@ def analyze_medical_bill(bill: MedicalBill) -> dict:
             "non_payable_items": non_payable_items,
             "coverage_breakdown": coverage_breakdown,
             "cost_efficiency_warnings": cost_efficiency_warnings,
+            "price_alternatives": price_alternatives,
         }
 
     except ValueError:
